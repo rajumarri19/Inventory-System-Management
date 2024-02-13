@@ -1,0 +1,199 @@
+{% extends 'base.html' %} <br />
+{% block title %}Category List{% endblock %} <br />
+{% block css %}
+<style>
+  
+</style>
+{% endblock %} <br />
+{% block content %}
+<div class="pt-3">
+  <div class="container">
+   
+{% include 'navbar.html' %}
+
+    <!-- inventory start here -->
+    <div class="box">
+      <div class="head p-3">
+        <div class="d-flex justify-content-between">
+          <div class="customer-list"><h2>Category List</h2></div>
+          <div class="add-new-customer">
+            <button href=""  data-bs-toggle="modal" data-bs-target="#exampleModal2" class="btn btn-primary p-2"><i class="fa-solid fa-square-plus p-2"></i>&nbsp;&nbsp; Add New Ctegory</button>
+          </div>
+          
+        </div>
+      </div>
+      <div class="container pt-4 bg-white pb-3">
+        <div class="d-flex mb-3 justify-content-end align-content-center">
+          <div class="col-3">
+            <form action="{% url 'category' %}" method="get">
+          <div class="input-group mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Search"  aria-describedby="basic-addon2">
+            <button type="submit" class="input-group-text" id="basic-addon2">Search</button>
+          </div>
+        </form>
+        </div>
+
+          
+        </div>
+        <!-- messages here -->
+        {% if messages %}
+
+        {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <!-- messages end here -->
+          <table class="table table-bordered table-striped">
+            
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Category Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for category in categories %}
+              <tr>
+                <th scope="row">{{category.id}}</th>
+                <td>{{category.category_name}}</td>
+                <td>{{category.category_status}}</td>
+               
+                <td class="text-center g-1">
+                  <button type="button" onclick="edit('{{category.id}}','{{category.category_name}}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <a href="{% url 'category_delete' category.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+
+                </td>
+              </tr>
+              
+              {% endfor %}
+           
+              
+              
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between pt-3">
+            <div class="ml-3">showing of 10</div>
+            <div class="mr-3">
+              <nav aria-label="...">
+                <ul class="pagination">
+                  {% if categories.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ categories.previous_page_number }}">Previous</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">Previous</a>
+                    </li>
+                  {% endif %}
+                  
+                  {% for x in categories.paginator.page_range %}
+                    {% if categories.number == x %}
+                      <li class="page-item active"><a class="page-link" href="?page={{ x }}">{{ x }}</a></li>
+                    {% else %}
+                      <li class="page-item"><a class="page-link" href="?page={{ x }}">{{ x }}</a></li>
+                    {% endif %}
+                  {% endfor %}
+                
+                  {% if categories.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ categories.next_page_number }}">Next</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">Next</a>
+                    </li>
+                  {% endif %}
+                </ul>
+                
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- inventory end here -->
+    </div>
+  </div>
+
+<!-- for table -->
+<!-- Modal 1 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'update_category' %}" method="post">
+        {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-pen-to-square"></i> Edit Category</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="mb-3">
+            <label for="" class="form-label">Category Name</label>
+            <input type="text" name="category_name" id="category_name" class="form-control">
+            <input type="hidden" name="category_id" id="id">
+          </div>
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Edit</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- modal 2 -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'category' %}" method="post">
+        {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel2"><i class="fa-solid fa-plus"></i> Add Category</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="" class="form-label">Category Name</label>
+          <input type="text"  name="category_name" class="form-control">
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+
+  function edit(id, category_name){
+    document.getElementById('category_name').value = category_name
+    document.getElementById('id').value = id
+  }
+
+
+
+</script>
+
+
+
+  {% endblock %}
+</div>
+
+
+

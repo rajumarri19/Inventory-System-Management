@@ -1,0 +1,174 @@
+{% extends 'base.html' %} <br />
+{% block title %}Inventory{% endblock %} <br />
+{% block css %}
+<style>
+  .home > ul {
+    list-style: none;
+  }
+  .home > ul li {
+    display: inline-block;
+    padding: 0px 10px;
+  }
+  .administrator {
+    margin-right: 20px;
+  }
+  .head {
+    background-color: rgb(245, 239, 239);
+    border-bottom: 1px solid gray;
+  }
+</style>
+{% endblock %} <br />
+{% block content %}
+<div class="pt-3">
+  <div class="container">
+   
+{% include 'navbar.html' %}
+
+    <!-- inventory start here -->
+    <div class="box">
+      <div class="head p-3">
+        <h2>Inventory</h2>
+      </div>
+      <div class="container pt-4 bg-white pb-3">
+        <div class="d-flex mb-3 justify-content-end align-content-center">
+          <div class="col-3">
+            <form action="{% url 'home' %}" method="get">
+          <div class="input-group mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Search"  aria-describedby="basic-addon2">
+            <button type="submit" class="input-group-text" id="basic-addon2">Search</button>
+          </div>
+        </form>
+        </div>
+
+          
+        </div>
+        
+          <table class="table table-bordered table-striped">
+            
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">PRoduct/Code</th>
+                <th scope="col">Starting Inventory</th>
+                <th scope="col">Inventory Recieved</th>
+                <th scope="col">Inventory Shipped</th>
+                <th scope="col">Inventory On Hand</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in values %}
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{ entry.product_name }}</td>
+                <td>{{ entry.starting_inventory }}</td>
+                <td>{{ entry.purchase_quantity }}</td>
+                <td>{{ entry.inventory_shipped }}</td>
+                <td>{{ entry.total_inventory }}</td>
+              </tr>
+            {% endfor %}
+              <!-- {% for product in products %}
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{product.product_name}} / {{product.product_model}}</td>
+                <td>{{product.product_quantity}}</td>
+                <td>
+
+            
+                  {% for purchase in purchases %}
+                  {% if purchase.product_id.product_name == product.product_name %}
+                    {{ purchase.quantity }}
+                  {% endif %}
+                {% endfor %}
+                
+         
+                </td>
+                <td>
+                  {% for order in orders %}
+  {% if order.product_id.product_name == product.product_name %}
+    {{ order.total_shipped }}
+  {% endif %}
+{% endfor %}
+                </td>
+                <td>
+                  {{ product.product_quantity }}
++
+{% for purchase in purchases %}
+  {% if purchase.product_id.product_name == product.product_name %}
+    {{ purchase.quantity }}
+  {% endif %}
+{% endfor %}
+-
+{% for order in orders %}
+  {% if order.product_id.product_name == product.product_name %}
+    {{ order.total_shipped }}
+  {% endif %}
+{% endfor %}
+
+
+                </td>
+              </tr>
+              {% endfor %}
+                                  
+              {% for entry in values %}
+              <tr>
+                <td>{{ entry.product_name }}</td>
+                <td>{{ entry.starting_inventory }}</td>
+                <td>{{ entry.purchase_quantity }}</td>
+                <td>{{ entry.inventory_shipped }}</td>
+                <td>{{ entry.total_inventory }}</td>
+              </tr>
+            {% endfor %}
+              <tr>
+                <th scope="row">3</th>
+                <td>Larry the Bird</td>
+                <td>Larry the Bird</td>
+                <td>@twitter</td>
+              </tr> -->
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between pt-3">
+            <div class="ml-3">showing of 10</div>
+            <div class="mr-3">
+              <nav aria-label="...">
+                <ul class="pagination">
+                  {% if products.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">Previous</a>
+                    </li>
+                  {% endif %}
+                
+                  {% for x in products.paginator.page_range %}
+                    {% if products.number == x %}
+                      <li class="page-item active"><a class="page-link" href="?page={{ x }}">{{ x }}</a></li>
+                    {% else %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ x }}">{{ x }}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                
+                  {% if products.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">Next</a>
+                    </li>
+                  {% endif %}
+                </ul>
+                
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- inventory end here -->
+    </div>
+  </div>
+  {% endblock %}
+</div>

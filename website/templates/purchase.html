@@ -1,0 +1,276 @@
+{% extends 'base.html' %} <br />
+{% block title %}Purchase List{% endblock %} <br />
+{% block css %}
+<style>
+  
+</style>
+{% endblock %} <br />
+{% block content %}
+<div class="pt-3">
+  <div class="container">
+   
+{% include 'navbar.html' %}
+
+    <!-- inventory start here -->
+    <div class="box">
+      <div class="head p-3">
+        <div class="d-flex justify-content-between">
+          <div class="customer-list"><h2>Purchase List</h2></div>
+          <div class="add-new-customer">
+            <button href=""  data-bs-toggle="modal" data-bs-target="#exampleModal2" class="btn btn-primary p-2"><i class="fa-solid fa-square-plus p-2"></i>&nbsp;&nbsp; Add Purchase</button>
+          </div>
+          
+        </div>
+      </div>
+      <div class="container pt-4 bg-white pb-3">
+        <div class="d-flex mb-3 justify-content-end align-content-center">
+          <div class="col-3">
+            <form action="{% url 'purchase' %}" method="get">
+          <div class="input-group mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Search"  aria-describedby="basic-addon2">
+            <button type="submit" class="input-group-text" id="basic-addon2">Search</button>
+          </div>
+        </form>
+        </div>
+
+          
+        </div>
+
+        <!-- messages start here -->
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+
+        {% endif %}
+        <!-- messages end here -->
+        
+          <table class="table table-bordered table-striped">
+          
+            
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Supplier</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+                
+            <tbody>
+              {% for purchase in purchases %}
+              <tr>
+                <th scope="row">{{purchase.id}}</th>
+                <td>{{purchase.product_id.product_name}}</td>
+                <td>{{purchase.quantity}}</td>
+                <td>{{purchase.Supplier_id.supplier_name}}</td>
+
+                <td class="text-center g-1">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  onclick="edit('{{purchase.id}}','{{purchase.quantity}}')"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <a href="{% url 'purchase_delete' purchase.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+
+                </td>
+              </tr>
+              {% endfor %}
+              <tr>
+              
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between pt-3">
+            <div class="ml-3">showing of 10</div>
+            <div class="mr-3">
+              <nav aria-label="...">
+                <ul class="pagination">
+                  {% if purchases.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ purchases.previous_page_number }}">Previous</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">Previous</a>
+                    </li>
+                  {% endif %}
+                  
+                  {% for x in purchases.paginator.page_range %}
+                    {% if purchases.number == x %}
+                      <li class="page-item active"><a class="page-link" href="?page={{ x }}">{{ x }}</a></li>
+                    {% else %}
+                      <li class="page-item" aria-current="page">
+                        <a class="page-link" href="?page={{ x }}">{{ x }}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                
+                  {% if purchases.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ purchases.next_page_number }}">Next</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link" href="">Next</a>
+                    </li>
+                  {% endif %}
+                </ul>
+                
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- inventory end here -->
+    </div>
+  </div>
+
+<!-- for table -->
+<!-- Modal 1 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'update_purchase' %}" method="post">
+        {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-pen-to-square"></i> Edit Purshase</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          
+          <div class="mb-3">
+            <label  class="form-label">Product Name</label>
+            <select
+              class="form-select form-select-lg"
+              name="product_name"
+              id="product_name"
+            >
+            
+            {% for product in products %}
+              <option value="{{product.id}}">{{product.product_name}}</option>
+              {% endfor %} 
+            </select>
+          </div>
+          
+
+
+
+
+          <div class="mb-3">
+            <label for="" class="form-label">Product Quantity</label>
+            <input type="number" name="product_quantity" id="product_quantity" class="form-control">
+            <input type="hidden" name="purchase_id" id="purchase_id">
+          </div>
+          <div class="mb-3">
+            <label for="" class="form-label">Supplier</label>
+            <select
+              class="form-select form-select-lg"
+              name="supplier_name"
+              id="supplier_name"
+            >
+            {% for supplier in suppliers %}
+              <option value="{{supplier.id}}">{{supplier.supplier_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- modal 2 -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'purchase' %}" method="post">
+        {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel2"><i class="fa-solid fa-plus"></i> Add Purchase</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="mb-3">
+          <label  class="form-label">Product Name</label>
+          <select
+            class="form-select form-select-lg"
+            name="product_name"
+            id=""
+          >
+          {% for product in products %}
+            <option value="{{product.id}}">{{product.product_name}}</option>
+            {% endfor %} 
+          </select>
+        </div>
+        
+        
+        <div class="mb-3">
+          <label for="" class="form-label">Product Quantity</label>
+          <input type="number" name="product_quantity" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Supplier</label>
+          <select
+            class="form-select form-select-lg"
+            name="supplier_name"
+            id=""
+          >
+          {% for supplier in suppliers %}
+            <option value="{{supplier.id}}">{{supplier.supplier_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">ADD</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+function edit(id,quantity){
+
+  var psid = document.getElementById('purchase_id');
+  var product_quantity=document.getElementById('product_quantity')
+  psid.value=id
+  product_quantity.value=quantity
+
+ 
+
+
+
+}
+
+
+</script>
+
+
+
+  {% endblock %}
+</div>
+
+
+

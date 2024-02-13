@@ -1,0 +1,241 @@
+{% extends 'base.html' %} <br />
+{% block title %}Supplier List{% endblock %} <br />
+{% block css %}
+<style>
+  
+</style>
+{% endblock %} <br />
+{% block content %}
+<div class="pt-3">
+  <div class="container">
+   
+{% include 'navbar.html' %}
+
+    <!-- inventory start here -->
+    <div class="box">
+      <div class="head p-3">
+        <div class="d-flex justify-content-between">
+          <div class="customer-list"><h2>Supplier List</h2></div>
+          <div class="add-new-customer">
+            <button href=""  data-bs-toggle="modal" data-bs-target="#exampleModal2" class="btn btn-primary p-2"><i class="fa-solid fa-square-plus p-2"></i>&nbsp;&nbsp; New Supplier</button>
+          </div>
+          
+        </div>
+      </div>
+      <div class="container pt-4 bg-white pb-3">
+        <div class="d-flex mb-3 justify-content-end align-content-center">
+          <div class="col-3">
+            <form action="{%  url  'supplier' %}" method="get">
+          <div class="input-group mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Search"  aria-describedby="basic-addon2">
+            <button type="submit" class="input-group-text" id="basic-addon2">Search</button>
+          </div>
+        </form>
+        </div>
+
+          
+        </div>
+        <!-- messages here -->
+        {%  if messages %}
+        {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+          {% endfor %}
+        {% endif %}
+
+        <!-- messages end here -->
+          <table class="table table-bordered table-striped">
+            
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Address</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for supplier in suppliers %}
+              <tr>
+                <th scope="row">{{supplier.id}}</th>
+                <td>{{supplier.supplier_name}}</td>
+                <td>{{supplier.supplier_mobile}}</td>
+                <td>{{supplier.supplier_address}}</td>
+                <td>{{supplier.supplier_status}}</td>
+               
+                <td class="text-center g-1">
+                  <button type="button"
+                  onclick="edit('{{supplier.id}}', '{{supplier.supplier_name}}', '{{supplier.supplier_mobile}}', '{{supplier.supplier_address}}')"
+                  
+                  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <a href="{% url 'supplier_delete' supplier.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between pt-3">
+            <div class="ml-3">showing of 10</div>
+            <div class="mr-3">
+              <nav aria-label="...">
+                <ul class="pagination">
+                  {% if suppliers.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ suppliers.previous_page_number }}">Previous</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">Previous</a>
+                    </li>
+                  {% endif %}
+                
+                  {% for x in suppliers.paginator.page_range %}
+                    {% if suppliers.number == x %}
+                      <li class="page-item active"><a class="page-link" href="?page={{ x }}">{{ x }}</a></li>
+                    {% else %}
+                      <li class="page-item" aria-current="page">
+                        <a class="page-link" href="?page={{ x }}">{{ x }}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+              
+                  {% if suppliers.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ suppliers.next_page_number }}">Next</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link" href="">Next</a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </nav>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- inventory end here -->
+    </div>
+  </div>
+
+<!-- for table -->
+<!-- Modal 1 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'update_supplier' %}" method="post">
+        {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-pen-to-square"></i> Edit Supplier</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="mb-3">
+            <label for="" class="form-label">Supplier Name</label>
+            <input type="text" name="supplier_name" id="supplier_name" class="form-control">
+            <input type="hidden" id="id" name="supplier_id">
+          </div>
+          <div class="mb-3">
+            <label for="" class="form-label">Mobile</label>
+            <input type="text" name="supplier_mobile" id="supplier_mobile" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="" class="form-label">Address</label>
+            <textarea class="form-control"  name="supplier_address" id="supplier_address" rows="3"></textarea>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- modal 2 -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'supplier' %}" method="post">
+        {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel2"><i class="fa-solid fa-plus"></i> Add Customer</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+       
+        <div class="mb-3">
+          <label for="" class="form-label">Enter Supplier Name</label>
+          <input type="text" name="supplier_name" 
+          required
+          class="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Mobile</label>
+          <input type="number" class="form-control" name="supplier_mobile" 
+          requiredclass="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Address</label>
+          <textarea class="form-control" 
+          required name="supplier_address" id="" rows="3"></textarea>
+        </div>
+        
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">ADD</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  function edit(sid, sname,smobile, saddress){
+
+    var id = document.getElementById('id');
+    var supplier_name = document.getElementById('supplier_name');
+    var supplier_mobile = document.getElementById('supplier_mobile');
+    var supplier_address = document.getElementById('supplier_address');
+    id.value=sid
+    supplier_name.value=sname
+    supplier_mobile.value=smobile
+    supplier_address.value=saddress
+  }
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+  {% endblock %}
+</div>
+
+
+

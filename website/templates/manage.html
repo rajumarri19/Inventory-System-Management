@@ -1,0 +1,267 @@
+{% extends 'base.html' %} <br />
+{% block title %}Manage Orders{% endblock %} <br />
+{% block css %}
+<style>
+  
+</style>
+{% endblock %} <br />
+{% block content %}
+<div class="pt-3">
+  <div class="container">
+   
+{% include 'navbar.html' %}
+
+    <!-- inventory start here -->
+    <div class="box">
+      <div class="head p-3">
+        <div class="d-flex justify-content-between">
+          <div class="customer-list"><h2>Manage Orders</h2></div>
+          <div class="add-new-customer">
+            <button href=""  data-bs-toggle="modal" data-bs-target="#exampleModal2" class="btn btn-primary p-2"><i class="fa-solid fa-square-plus p-2"></i>&nbsp;&nbsp; New Order</button>
+          </div>
+          
+        </div>
+      </div>
+      <div class="container pt-4 bg-white pb-3">
+        <div class="d-flex mb-3 justify-content-end align-content-center">
+          <div class="col-3">
+            <form action="{% url 'manage_page' %}" method="get">
+          <div class="input-group mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Search"  aria-describedby="basic-addon2">
+            <button type="submit" class="input-group-text" id="basic-addon2">Search</button>
+          </div>
+        </form>
+        </div>
+
+          
+        </div>
+        {% if messages %}
+
+
+        {% for message in messages %}
+
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+
+        {% endif %}
+        
+          <table class="table table-bordered table-striped">
+            
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Product</th>
+                <th scope="col">Total Item</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+                
+            <tbody>
+              {% for order in orders %}
+              <tr>
+                <th scope="row">{{order.id}}</th>
+                <td>{{order.product_id.product_name}}</td>
+                <td>{{order.total_shipped}}</td>
+                <td>{{order.customer_id.customer_name}}</td>
+
+                <td class="text-center g-1">
+                  <button type="button" onclick="edit('{{order.id}}','{{order.total_shipped}}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <a href="{% url 'order_delete' order.id %}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
+
+                </td>
+              </tr>
+              {% endfor %}
+              
+            </tbody>
+          </table>
+          <div class="d-flex justify-content-between pt-3">
+            <div class="ml-3">showing of 10</div>
+            <div class="mr-3">
+              <nav aria-label="...">
+                <ul class="pagination">
+                  {% if orders.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ orders.previous_page_number }}">Previous</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link">Previous</a>
+                    </li>
+                  {% endif %}
+                  
+                  {% for x in orders.paginator.page_range %}
+                    {% if orders.number == x %}
+                      <li class="page-item active"><a class="page-link" href="?page={{ x }}">{{ x }}</a></li>
+                    {% else %}
+                      <li class="page-item" aria-current="page">
+                        <a class="page-link" href="?page={{ x }}">{{ x }}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                
+                  {% if orders.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ orders.next_page_number }}">Next</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <a class="page-link" href="">Next</a>
+                    </li>
+                  {% endif %}
+                </ul>
+                
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- inventory end here -->
+    </div>
+  </div>
+
+<!-- for table -->
+<!-- Modal 1 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'upadate_manage_page' %}" method="post">
+        {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-pen-to-square"></i> Edit Order</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+            <input type="hidden" name="order_id" id="ids" value="">
+          <div class="mb-3">
+            <label for="" class="form-label">Product Name</label>
+            <select
+              class="form-select form-select-lg"
+              name="product_id"
+              id="product_id"
+            >
+            {% for product in products %}
+              <option value="{{product.id}}" id="{{product.id}}">{{product.product_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="" class="form-label">Total Item</label>
+            <input type="text" value="" name="total_item" id="total_item" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="" class="form-label">Customer Name</label>
+            <select
+              class="form-select form-select-lg"
+              name="customer_id"
+              id="customer_id"
+            >
+            
+            {% for customer in customers %}
+              <option value="{{customer.id}}">{{customer.customer_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<!-- modal 2 -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'manage_page' %}" method="post">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel2"><i class="fa-solid fa-plus"></i> Add Order</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+       
+
+        <div class="mb-3">
+          <label for="" class="form-label">Product Name</label>
+          <select
+            class="form-select form-select-lg"
+            name="product_id"
+            required
+            id=""
+          >
+          {% for product in products %}
+            <option value="{{product.id}}" >{{product.product_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        
+
+
+        <div class="mb-3">
+          <label for="" class="form-label">Total Item</label>
+          <input required type="number" name="total_item" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label for="" class="form-label">Customer Name</label>
+          <select
+            class="form-select form-select-lg"
+            name="customer_id"
+            id="" required
+          >
+          {% for customer in customers %}
+            <option value="{{customer.id}}">{{customer.customer_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit"  class="btn btn-primary">ADD</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+<script>
+
+ function edit(id,total_item,){
+  document.getElementById('ids').value = id
+ 
+  document.getElementById('total_item').value = total_item
+ 
+}
+
+
+  
+
+
+
+
+</script>
+  {% endblock %}
+</div>
+
+
+
+
+
+

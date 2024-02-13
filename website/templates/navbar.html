@@ -1,0 +1,93 @@
+<div class="row">
+  <div
+    class="col-12 p-3 bg-secondary mb-3"
+    style="background-color: rgba(0, 0, 0, 0.911); color: white"
+  >
+    <div class="d-flex justify-content-between">
+      <div class="home">
+        <ul>
+          <li
+            class="{% if request.path == '/home/' %} highlight {% else %} non {% endif %}"
+          >
+            <a
+              class=""
+              style="text-decoration: none; color: white"
+              href="{% url 'home' %}"
+              >home</a
+            >
+          </li>
+          <li
+            class="{% if request.path == '/home/' %} highlight {% else %} non {% endif %}"
+          >
+            <a
+              class=""
+              style="text-decoration: none; color: white"
+              href="{% url 'customer' %}"
+              >Custormer</a
+            >
+          </li>
+          <li
+            class="{% if request.path == '/home/' %} highlight {% else %} non {% endif %}"
+          >
+            <a
+              class=""
+              style="text-decoration: none; color: white"
+              href="{% url 'category' %}"
+              >Category</a
+            >
+          </li>
+          <li
+            class="{% if request.path == '/home/' %} highlight {% else %} non {% endif %}"
+          >
+            <a
+              class=""
+              style="text-decoration: none; color: white"
+              href="{% url 'brand' %}"
+              >Brand</a
+            >
+          </li>
+          <li
+            class="{% if request.path == '/home/' %} highlight {% else %} non {% endif %}"
+          >
+            <a
+              class=""
+              style="text-decoration: none; color: white"
+              href="{% url 'supplier' %}"
+              >Supplier</a
+            >
+          </li>
+          <li
+            class="{% if request.path == '/home/' %} highlight {% else %} non {% endif %}"
+          >
+            <a
+              class=""
+              style="text-decoration: none; color: white"
+              href="{% url 'product' %}"
+              >Product</a
+            >
+          </li>
+          <li>
+            <a
+              style="text-decoration: none; color: white"
+              href="{% url 'purchase' %}"
+              >Purchase</a
+            >
+          </li>
+          <li
+            class="{% if request.path == '/home/' %} highlight {% else %} non {% endif %}"
+          >
+            <a
+              class=""
+              style="text-decoration: none; color: white"
+              href="{% url 'manage_page' %}"
+              >Order</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="administrator">
+        <span class="badge text-bg-light rounded-pill">Administrator</span>
+      </div>
+    </div>
+  </div>
+</div>
