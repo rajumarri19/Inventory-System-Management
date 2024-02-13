@@ -9,7 +9,7 @@ copy the database name 'inventory_management'.
 
 Now open your XAMPPP tool, then start Apachce and MySQL servers. If your server starts running then click on 'Admin' of MySQL Press on the +new from the left side bar Paste the database name 'inventory_management' and press create, your database is created successfully
 
-Now go to your code editor and there select the application name 'product', open migrations folder and delete the file name called '0001_initial.py'
+Now go to your code editor and there select the application name 'website', open migrations folder and delete the file name called '0001_initial.py'
 
 Note: "Never ever delete the file "inint.py"
 
